@@ -11,6 +11,8 @@ public class BallScript : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        print("triggered");
+
         this.gameObject.transform.SetParent(parent_Transform);
         this.gameObject.transform.localPosition = new Vector2(0, 0);
         StartCoroutine(uiManager.StopAtNumber());

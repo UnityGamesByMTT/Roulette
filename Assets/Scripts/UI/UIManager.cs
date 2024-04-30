@@ -82,6 +82,8 @@ public class UIManager : MonoBehaviour
     private Tweener OuterRouletteMovement = null;
     private Tweener InnerRouletteMovement = null;
 
+    [SerializeField]private GameObject Stopper_pref;
+    private GameObject Stopper;
 
     private void Awake()
     {
@@ -107,6 +109,8 @@ public class UIManager : MonoBehaviour
         if (Roulette_BallContainer) ballMovement = Roulette_BallContainer.DORotate(new Vector3(0, 0, 359), 1, RotateMode.FastBeyond360).SetEase(Ease.Linear).SetLoops(-1);
         if (SpinPanel_Object) SpinPanel_Object.SetActive(true);
         numberAnnounced = Random.Range(0, 37);
+        Stopper=Instantiate(Stopper_pref, BallStopPoint[numberAnnounced]);
+        Stopper.transform.localPosition = Vector2.zero;
         StartCoroutine(BallRevolution(numberAnnounced));
     }
 
@@ -131,7 +135,9 @@ public class UIManager : MonoBehaviour
             yield return new WaitForSecondsRealtime(0.1f);
         }
         BallManager.parent_Transform = BallStopPoint[number];
-        BallStopPoint[number].gameObject.GetComponent<BoxCollider2D>().enabled = true;
+   
+        Stopper.GetComponent<BoxCollider2D>().enabled = true;
+        print("triggered");
     }
 
     private void UpdatePreviousNumbers(int addition)
@@ -178,7 +184,9 @@ public class UIManager : MonoBehaviour
         UpdatePreviousNumbers(numberAnnounced);
 
         yield return new WaitForSecondsRealtime(3);
-        BallStopPoint[numberAnnounced].gameObject.GetComponent<BoxCollider2D>().enabled = false;
+        Stopper.GetComponent<BoxCollider2D>().enabled = false;
+        Destroy(Stopper);
+        Stopper = null;
         StartCoroutine(StartBetting());
         if (SpinPanel_Object) SpinPanel_Object.SetActive(false);
         OuterRouletteMovement.Pause();
