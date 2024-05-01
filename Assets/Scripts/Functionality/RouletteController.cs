@@ -32,11 +32,11 @@ public class RouletteController : MonoBehaviour
     [SerializeField]
     private Button cancelBet_Button;
 
+    [SerializeField] private AudioController audioController;
 
     private void Start()
     {
         if (activeCoins_Object[CoinCounter]) activeCoins_Object[CoinCounter].SetActive(true);
-
         if (cancelBet_Button) cancelBet_Button.onClick.RemoveAllListeners();
         if (cancelBet_Button) cancelBet_Button.onClick.AddListener(CancelBet);
     }
@@ -56,6 +56,7 @@ public class RouletteController : MonoBehaviour
 
     internal void SelectCoin(GameObject activeObject, int counter)
     {
+        audioController.PlayButtonAudio();
         foreach (GameObject objs in activeCoins_Object)
         {
             objs.SetActive(false);
@@ -66,6 +67,7 @@ public class RouletteController : MonoBehaviour
 
     internal void BetOnButton(Transform parent, string code = null)
     {
+        audioController.PlayWLAudio("chip",false);
         GameObject coin = Instantiate(Coins_Prefab[CoinCounter], CoinContainer_Transform);
         coin.transform.SetParent(parent);
         coin.transform.DOLocalMove(new Vector2(0, 0), 0.5f);

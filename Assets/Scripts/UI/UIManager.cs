@@ -85,6 +85,8 @@ public class UIManager : MonoBehaviour
     [SerializeField]private GameObject Stopper_pref;
     private GameObject Stopper;
 
+    [SerializeField] private AudioController audioController;
+
     private void Awake()
     {
         initialBallPosition = Ball_Transform.localPosition;
@@ -98,6 +100,7 @@ public class UIManager : MonoBehaviour
 
     internal void StartSpinning()
     {
+        audioController.PlayWLAudio("spin");
         if (winNumber_Object) winNumber_Object.SetActive(false);                                                                                                                                                                                                                
         if (Ball_Transform) Ball_Transform.SetParent(Roulette_BallContainer);
         if (Ball_Transform) Ball_Transform.localPosition = initialBallPosition;
@@ -108,6 +111,7 @@ public class UIManager : MonoBehaviour
         if (Roulette_BallContainer) Roulette_BallContainer.localEulerAngles = new Vector3(0, 0, 0);
         if (Roulette_BallContainer) ballMovement = Roulette_BallContainer.DORotate(new Vector3(0, 0, 359), 1, RotateMode.FastBeyond360).SetEase(Ease.Linear).SetLoops(-1);
         if (SpinPanel_Object) SpinPanel_Object.SetActive(true);
+
         numberAnnounced = Random.Range(0, 37);
         Stopper=Instantiate(Stopper_pref, BallStopPoint[numberAnnounced]);
         Stopper.transform.localPosition = Vector2.zero;
@@ -164,6 +168,8 @@ public class UIManager : MonoBehaviour
 
     internal IEnumerator StopAtNumber()
     {
+        audioController.StopWLAaudio();
+        audioController.PlayButtonAudio();
         if (winNumber_Text) winNumber_Text.text = numberAnnounced.ToString();
 
         if (NumberCode[numberAnnounced] == "black")
@@ -184,9 +190,11 @@ public class UIManager : MonoBehaviour
         UpdatePreviousNumbers(numberAnnounced);
 
         yield return new WaitForSecondsRealtime(3);
+
         Stopper.GetComponent<BoxCollider2D>().enabled = false;
         Destroy(Stopper);
         Stopper = null;
+
         StartCoroutine(StartBetting());
         if (SpinPanel_Object) SpinPanel_Object.SetActive(false);
         OuterRouletteMovement.Pause();
@@ -198,6 +206,7 @@ public class UIManager : MonoBehaviour
         ballMovement.Pause();
         ballMovement.Kill();
         ballMovement = null;
+        audioController.StopButtonAudio();
     }
 
     private IEnumerator StartBetting()
@@ -208,7 +217,7 @@ public class UIManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(2);
         if (StartBettingPopup) StartBettingPopup.SetActive(false);
         if (MainPopup_Object) MainPopup_Object.SetActive(false);
-        for (int i = Timer; i >= 0; i--) 
+        for (int i = Timer; i >= 0; i--)
         {
             if (Timer_Text) Timer_Text.text = i.ToString();
             yield return new WaitForSecondsRealtime(1);
