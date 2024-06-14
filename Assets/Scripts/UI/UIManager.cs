@@ -31,6 +31,10 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private TMP_Text winNumber_Text;
 
+    [Header("Buttons")]
+    [SerializeField]
+    private Button GameExit_Button;
+
     [Header("GameObjects")]
     [SerializeField]
     private GameObject StartBettingPopup;
@@ -95,8 +99,16 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         AnimateArrows();
+        if (GameExit_Button) GameExit_Button.onClick.RemoveAllListeners();
+        if (GameExit_Button) GameExit_Button.onClick.AddListener(CallOnExitFunction);
+        Application.ExternalCall("window.parent.postMessage", "OnEnter", "*");
     }
 
+
+    private void CallOnExitFunction()
+    {
+        Application.ExternalCall("window.parent.postMessage", "onExit", "*");
+    }
 
     internal void StartSpinning()
     {
