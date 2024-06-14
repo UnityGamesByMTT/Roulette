@@ -6638,6 +6638,7 @@ MonoBehaviour:
   Ball_Transform: {fileID: 51789063}
   Timer_Text: {fileID: 875327719}
   winNumber_Text: {fileID: 1471331885}
+  GameExit_Button: {fileID: 1863786232}
   StartBettingPopup: {fileID: 1761316003}
   StopBettingPopup: {fileID: 1432047889}
   SpinPanel_Object: {fileID: 1855610085}
